@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: constant-storage
+  namespace: exercise-java
+data:
+  # property-like keys; each key maps to a simple value
+  namespace: "exercise-java"
+  postgres_user: "postgres"
+  postgres_password: "postgres"
+  postgres_db: "users"
+  spring_datasource_url: "jdbc:postgresql://exercise-postgres:5432/users"

@@ -42,14 +42,14 @@ spec:
             # PostgreSQL configuration
             - name: POSTGRES_USER
               valueFrom:
-                configMapKeyRef:
-                  name: constant-storage
-                  key: postgres_user
+                secretKeyRef:
+                  name: secret-basic-auth
+                  key: username
             - name: POSTGRES_PASSWORD
               valueFrom:
-                configMapKeyRef:
-                  name: constant-storage
-                  key: postgres_password
+                secretKeyRef:
+                  name: secret-basic-auth
+                  key: password
             - name: POSTGRES_DB
               valueFrom:
                 configMapKeyRef:

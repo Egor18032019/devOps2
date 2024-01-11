@@ -1,0 +1,8 @@
+namespace: main-helm
+name_db: "users"
+url_db: "jdbc:postgresql://exercise-postgres:5432/users"
+username_db: "postgres"
+password_db: "postgres"
+image_db: postgres:14-alpine
+image_app: egor140512/soft:0.7
+replicas_app: 1

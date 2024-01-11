@@ -1,46 +1,50 @@
-apiVersion: v1
-kind: Pod
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: foo-app
   namespace: exercise-java
   labels:
     app.kubernetes.io/name: proxy
 spec:
-  containers:
-    - name: foo-app
-      image: egor140512/soft:0.7
-#      resources:
-#        requests:
-#          memory: "333Mi"
-#          cpu: "100m"
-#        limits:
-#          memory: "333Mi"
-#          cpu: "100m"
-      env:
-        - name: SPRING_DATASOURCE_URL
-          valueFrom:
-            configMapKeyRef:
-              name: constant-storage         # The ConfigMap this value comes from.
-              key: spring_datasource_url # The key to fetch.
-        - name: SPRING_DATASOURCE_USERNAME
-          valueFrom:
-            configMapKeyRef:
-              name: constant-storage
-              key: postgres_user
-        - name: SPRING_DATASOURCE_PASSWORD
-          valueFrom:
-            configMapKeyRef:
-              name: constant-storage
-              key: postgres_password
-      ports:
-        - containerPort: 8080
-          name: web
-  volumes:
-    # You set volumes at the Pod level, then mount them into containers inside that Pod
-    - name: config
-      configMap:
-        # Provide the name of the ConfigMap you want to mount.
-        name: constant-storage
+  replicas: 1
+  selector:
+    matchLabels:
+      app: foo-app
+  template:
+    metadata:
+      labels:
+        app: foo-app
+    spec:
+      containers:
+        - name: foo-app
+          image: egor140512/soft:0.7
+          resources:
+            requests:
+              memory: "333Mi"
+              cpu: 1
+            limits:
+              memory: "333Mi"
+              cpu: 1
+          env:
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: constant-storage         # The ConfigMap this value comes from.
+                  key: spring_datasource_url # The key to fetch.
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: secret-basic-auth
+                  key: username
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret-basic-auth
+                  key: password
+          ports:
+            - containerPort: 8080
+              name: web
+
 ---
 kind: Service
 apiVersion: v1

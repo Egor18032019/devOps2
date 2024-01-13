@@ -1,0 +1,37 @@
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: foo-app
+#  namespace: {{ .Values.namespace }}
+#  labels:
+#    app.kubernetes.io/name: proxy
+#spec:
+#  containers:
+#    - name: foo-app
+#      image: {{ .Values.image_app }}
+#      resources:
+#        requests:
+#          memory: "333Mi"
+#          cpu: 1
+#        limits:
+#          memory: "333Mi"
+#          cpu: 1
+#      env:
+#        - name: SPRING_DATASOURCE_URL
+#          valueFrom:
+#            configMapKeyRef:
+#              name: constant-storage         # The ConfigMap this value comes from.
+#              key: spring_datasource_url # The key to fetch.
+#        - name: SPRING_DATASOURCE_USERNAME
+#          valueFrom:
+#            secretKeyRef:
+#              name: secret-basic-auth
+#              key: username
+#        - name: SPRING_DATASOURCE_PASSWORD
+#          valueFrom:
+#            secretKeyRef:
+#              name: secret-basic-auth
+#              key: password
+#      ports:
+#        - containerPort: 8080
+#          name: web

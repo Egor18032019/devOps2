@@ -5,4 +5,4 @@ username_db: "postgres"
 password_db: "postgres"
 image_db: postgres:14-alpine
 image_app: egor140512/soft:0.7
-replicas_app: 1
+replicas_app: 2

@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: exercise-postgres
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: exercise-postgres
+    service: psql
+spec:
+  selector:
+    matchLabels:
+      app: db # has to match .spec.template.metadata.labels
+  serviceName: "postgres"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: db # has to match .spec.selector.matchLabels
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: postgres
+          image: {{ .Values.image_db }}
+          env:
+            # PostgreSQL configuration
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secret-basic-auth
+                  key: username
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret-basic-auth
+                  key: password
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: constant-storage
+                  key: postgres_db
+            - name: POSTGRESQL_LOG_HOSTNAME
+              value: "true"
+            - name: PGDATA
+              value: /var/lib/postgresql/data
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: pgdata-volume
+              mountPath: /var/lib/postgresql/data
+          livenessProbe:
+            tcpSocket:
+              port: 5432
+            initialDelaySeconds: 2
+            periodSeconds: 2
+          readinessProbe:
+            tcpSocket:
+              port: 5432
+            initialDelaySeconds: 2
+            periodSeconds: 2
+
+      volumes:
+        # You set volumes at the Pod level, then mount them into containers inside that Pod
+        - name: config
+          configMap:
+            # Provide the name of the ConfigMap you want to mount.
+            name: constant-storage
+
+  volumeClaimTemplates:
+    - metadata:
+        name: pgdata-volume
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 1Gi
+---

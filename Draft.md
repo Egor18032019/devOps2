@@ -10,7 +10,7 @@ curl -i -X GET http://127.0.0.1:80/api/user
 curl -i -X GET http://127.0.0.1:80
 ```
 ```shell
-kind create cluster --config kind.yaml -n hobby
+kind create cluster --config kind.yaml -n soft
 ```
 
 ```shell
@@ -21,5 +21,13 @@ helm install main main-helm
 ```shell
 kind delete cluster -n hobby
 ```
- 
--  
+
+
+```shell
+helm install app-release main-helm --set namespace=java-app
+```
+
+```shell
+helm upgrade main .  
+```
+ почему если деплоймент то не работает а с подомо работает 

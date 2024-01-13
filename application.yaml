@@ -6,7 +6,7 @@ metadata:
   labels:
     app.kubernetes.io/name: proxy
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: foo-app
@@ -53,12 +53,14 @@ metadata:
   namespace: exercise-java
 spec:
   selector:
+    app: foo-app
     app.kubernetes.io/name: proxy
   ports:
     - name: foo-app-port
       protocol: TCP
       port: 80
       targetPort: web
+
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
